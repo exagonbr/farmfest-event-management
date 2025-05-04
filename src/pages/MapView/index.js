@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Box, Typography, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import { MapContainer, TileLayer, Circle, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -50,9 +51,8 @@ function MapView() {
   const [timeRange, setTimeRange] = useState('week');
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showEvents, setShowEvents] = useState(true);
-  const [center] = useState([51.505, -0.09]); // Default center
+  const [center] = useState([51.505, -0.09]);
 
-  // In a real app, this would fetch data based on the time range
   useEffect(() => {
     console.log('Fetching data for time range:', timeRange);
   }, [timeRange]);
@@ -64,63 +64,54 @@ function MapView() {
   };
 
   return (
-    <div>
-      <div className="mb-6 flex flex-wrap gap-4 items-center justify-between">
-        <div className="space-x-4">
-          <select
+    <Box sx={{ mt: 4 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <FormControl sx={{ minWidth: 150 }}>
+          <InputLabel id="time-range-label">Time Range</InputLabel>
+          <Select
+            labelId="time-range-label"
             value={timeRange}
+            label="Time Range"
             onChange={(e) => setTimeRange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           >
-            <option value="week">Past Week</option>
-            <option value="month">Past Month</option>
-            <option value="year">Past Year</option>
-          </select>
-          
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              checked={showHeatmap}
-              onChange={(e) => setShowHeatmap(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-primary"
-            />
-            <span className="ml-2">Show Activity Heatmap</span>
-          </label>
+            <MenuItem value="week">Past Week</MenuItem>
+            <MenuItem value="month">Past Month</MenuItem>
+            <MenuItem value="year">Past Year</MenuItem>
+          </Select>
+        </FormControl>
 
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              checked={showEvents}
-              onChange={(e) => setShowEvents(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-primary"
-            />
-            <span className="ml-2">Show Events</span>
-          </label>
-        </div>
+        <FormControlLabel
+          control={<Checkbox checked={showHeatmap} onChange={(e) => setShowHeatmap(e.target.checked)} />}
+          label="Show Activity Heatmap"
+        />
+        <FormControlLabel
+          control={<Checkbox checked={showEvents} onChange={(e) => setShowEvents(e.target.checked)} />}
+          label="Show Events"
+        />
 
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center">
-            <span className="w-4 h-4 bg-red-500 rounded-full inline-block mr-2"></span>
-            <span>High Activity</span>
-          </div>
-          <div className="flex items-center">
-            <span className="w-4 h-4 bg-red-300 rounded-full inline-block mr-2"></span>
-            <span>Medium Activity</span>
-          </div>
-          <div className="flex items-center">
-            <span className="w-4 h-4 bg-red-200 rounded-full inline-block mr-2"></span>
-            <span>Low Activity</span>
-          </div>
-        </div>
-      </div>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ width: 16, height: 16, bgcolor: '#FF0000', borderRadius: '50%' }} />
+            <Typography>High Activity</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ width: 16, height: 16, bgcolor: '#FF6B6B', borderRadius: '50%' }} />
+            <Typography>Medium Activity</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ width: 16, height: 16, bgcolor: '#FFA07A', borderRadius: '50%' }} />
+            <Typography>Low Activity</Typography>
+          </Box>
+        </Box>
+      </Box>
 
-      <div className="h-[600px] bg-white rounded-lg shadow-md overflow-hidden">
+      <Box sx={{ height: 600, borderRadius: 2, overflow: 'hidden', bgcolor: 'background.paper', boxShadow: 1 }}>
         <MapContainer center={center} zoom={13} className="h-full">
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          
+
           {showHeatmap && mockActivities.map((activity) => (
             <Circle
               key={activity.id}
@@ -133,11 +124,11 @@ function MapView() {
               }}
             >
               <Popup>
-                <div className="p-2">
-                  <h3 className="font-semibold">Activity Zone</h3>
-                  <p>Events: {activity.events}</p>
-                  <p>Participants: {activity.participants}</p>
-                </div>
+                <Box sx={{ p: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold">Activity Zone</Typography>
+                  <Typography>Events: {activity.events}</Typography>
+                  <Typography>Participants: {activity.participants}</Typography>
+                </Box>
               </Popup>
             </Circle>
           ))}
@@ -154,18 +145,18 @@ function MapView() {
               }}
             >
               <Popup>
-                <div className="p-2">
-                  <h3 className="font-semibold">{event.title}</h3>
-                  <p>Type: {event.type}</p>
-                  <p>Date: {event.date}</p>
-                  <p>Attendees: {event.attendees}</p>
-                </div>
+                <Box sx={{ p: 2 }}>
+                  <Typography variant="subtitle1" fontWeight="bold">{event.title}</Typography>
+                  <Typography>Type: {event.type}</Typography>
+                  <Typography>Date: {event.date}</Typography>
+                  <Typography>Attendees: {event.attendees}</Typography>
+                </Box>
               </Popup>
             </Circle>
           ))}
         </MapContainer>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
